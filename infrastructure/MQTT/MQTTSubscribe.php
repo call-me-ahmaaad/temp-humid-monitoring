@@ -1,32 +1,39 @@
-<?php 
+<?php
 
 namespace App\Infrastructure\MQTT;
 
 use PhpMqtt\Client\ConnectionSettings;
 use PhpMqtt\Client\MqttClient;
+use App\Controllers\MQTTController;
 
-
-class MQTTSubscribe{
+class MQTTSubscribe
+{
 
     private array $mqttConfig;
+    private MqttController $mqttController;
 
-    public function __construct(){
+    public function __construct(MqttController $mqttController)
+    {
+        $this->mqttController = $mqttController;
         $this->mqttConfig = require __DIR__ . "/../../config/mqtt.php";
     }
 
-    public function listen(){
+    public function listen()
+    {
         $mqtt = $this->connect();
+        $controller = $this->mqttController;
 
-        foreach($this->mqttConfig["topics"] as $topic){
-            $mqtt->subscribe($topic, function($topic, $payload){
-                echo "Receive a message from $topic: $payload" . PHP_EOL;
+        foreach ($this->mqttConfig["topics"] as $topic) {
+            $mqtt->subscribe($topic, function ($topic, $payload) use ($controller) {
+                $controller->msgHandle($topic, $payload);
             });
         }
 
         $mqtt->loop(true);
     }
 
-    private function connect(): MqttClient{
+    private function connect(): MqttClient
+    {
         $server = $this->mqttConfig["host"];
         $port = $this->mqttConfig["port"];
         $clientId = $this->mqttConfig["clientId"];

@@ -4,20 +4,18 @@ namespace App\Controllers;
 
 require_once __DIR__ . "/../Validators/MQTTValidator.php";
 require_once __DIR__ . "/../Entities/SensorData.php";
-require_once __DIR__ . "/../Services/SensorDataServices.php";
+require_once __DIR__ . "/../Services/Processor/SensorDataProcessor.php";
 require_once __DIR__ . "/../Exceptions/SensorDataException.php";
 
 use App\Exceptions\SensorDataException;
-use App\Services\SensorDataServices;
+use App\Services\SensorDataProcessor;
 use App\Validators\MQTTValidator;
 use App\Entities\SensorData;
 
-class MQTTController
+class SensorDataController
 {
-    public function msgHandle($topic, $payload)
+    public function msgHandle($msg)
     {
-        $msg = json_decode($payload, true);
-
         $validator = new MQTTValidator();
         $errors = $validator->sensorDataValidation($msg);
 
@@ -35,15 +33,15 @@ class MQTTController
                 $msg["humid"]
             );
 
-            $service = new SensorDataServices();
-            $service->printSensorData(
+            $service = new SensorDataProcessor();
+            $service->processData(
                 $sensorData->getTemp(),
                 $sensorData->getHumid()
             );
         } catch (\TypeError $e) {
             echo "[ERROR][TypeError] " . $e->getMessage() . PHP_EOL;
         } catch (SensorDataException $e) {
-            echo "[ERROR][{$e->getCode()}] " . $e->getMessage() . PHP_EOL;
+            echo "[ERROR] " . $e->getMessage() . PHP_EOL;
         }
     }
 }

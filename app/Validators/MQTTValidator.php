@@ -2,24 +2,38 @@
 
 namespace App\Validators;
 
+require_once __DIR__ . "/../Services/SensorDataLogger.php";
+
+use App\Services\SensorDataLogger;
+
 class MQTTValidator{
     public function sensorDataValidation($payload){
         $errors = [];
+
+        $logger = new SensorDataLogger();
         
         if(!is_float($payload["temp"])){
-            $errors[] = "Temperature must be float data type";
+            $errorMsg = "Temperature must be float data type";
+            $errors[] = $errorMsg;
+            $logger->writeLog($errorMsg, null, "ERROR");
         }
 
-        if($payload["temp"] == null){
-            $errors[] = "Temperature cannot be null";
+        if($payload["temp"] === null){
+            $errorMsg = "Temperature cannot be null";
+            $errors[] = $errorMsg;
+            $logger->writeLog($errorMsg, null, "ERROR");
         }
 
         if(!is_float($payload["humid"])){
-            $errors[] = "Humidity must be float data type";
+            $errorMsg = "Humidity must be float data type";
+            $errors[] = $errorMsg;
+            $logger->writeLog($errorMsg, null, "ERROR");
         }
 
-        if($payload["humid"] == null){
-            $errors[] = "Humidity cannot be null";
+        if($payload["humid"] === null){
+            $errorMsg = "Humidity cannot be null";
+            $errors[] = $errorMsg;
+            $logger->writeLog($errorMsg, null, "ERROR");
         }
 
         return $errors;

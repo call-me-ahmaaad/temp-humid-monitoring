@@ -7,7 +7,4 @@ return [
     "username" => "your_username",
     "password" => "your_password",
     "keepAlive" => 60,
-    "topics" => [
-        "your_topic",
-    ],
 ];

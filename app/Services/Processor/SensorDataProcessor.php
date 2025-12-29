@@ -15,7 +15,5 @@ class SensorDataProcessor{
             throw new SensorDataException(
                 "Humidity out of range [\"temp\": {$temp}, \"humid\": {$humid}]");
         }
-
-        echo "[INFO] Final Data: [\"temp\": $temp, \"humid\": $humid]" . PHP_EOL;
     }
 }

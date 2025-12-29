@@ -2,8 +2,6 @@
 
 namespace App\Infrastructure\MQTT;
 
-require_once __DIR__ . "/../../app/Services/Logger/SensorDataLogger.php";
-
 use Exception;
 use PhpMqtt\Client\ConnectionSettings;
 use PhpMqtt\Client\MqttClient;
@@ -13,8 +11,11 @@ class MQTTConnection
 {
     private array $mqttConfig;
 
-    public function __construct(){
+    private SensorDataLogger $logger;
+
+    public function __construct(SensorDataLogger $logger){
         $this->mqttConfig = require __DIR__ . "/../../config/mqtt.php";
+        $this->logger = $logger;
     }
 
     public function connect(): MqttClient
@@ -29,15 +30,14 @@ class MQTTConnection
             ->setConnectTimeout($this->mqttConfig["keepAlive"]);
 
         $mqtt = new MqttClient($server, $port, $clientId);
-        $logger = new SensorDataLogger();
 
         try{
             $mqtt->connect($connectionSettings, true);
 
-            $logger->writeLog("Successfully connected to MQTT");
+            $this->logger->writeLog("Successfully connected to MQTT");
             echo "[INFO] Successfully connected to MQTT" . PHP_EOL;
         }catch(Exception $e){
-            $logger->writeLog("Successfully connected to MQTT","ERROR");
+            $this->logger->writeLog("Successfully connected to MQTT","ERROR");
             echo "[ERROR] {$e->getMessage()}" . PHP_EOL;
         }
         

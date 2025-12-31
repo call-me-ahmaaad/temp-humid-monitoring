@@ -29,7 +29,7 @@ class DBConnection
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $this->logger->writeLog("Successfully connected to database: $dbName");
-            echo "[INFO] Successfully connected to database" . PHP_EOL;
+            echo "[SUCCESS] Successfully connected to database" . PHP_EOL;
 
             return $conn;
         } catch (PDOException $e) {

@@ -18,7 +18,8 @@ class SensorDataTable
     public function insertData(float $temp, float $humid)
     {
         if ($this->pdo === null) {
-            $this->logger->writeLog("DB connection not available. Skip insert", "WARNING");
+            $this->logger->writeLog("Fail to insert data because connection failed. Skip insert", "WARNING");
+
             return;
         }
 

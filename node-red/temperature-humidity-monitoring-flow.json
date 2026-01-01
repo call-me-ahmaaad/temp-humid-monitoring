@@ -1,0 +1,737 @@
+[
+    {
+        "id": "9dd1801a862566ca",
+        "type": "tab",
+        "label": "Temperature and Humidity Monitoring",
+        "disabled": false,
+        "info": "This flow belong to Temperature and Humidity Project\r\n\r\nMake sure to check [this](https://github.com/call-me-ahmaaad/temp-humid-monitoring) for more information",
+        "env": []
+    },
+    {
+        "id": "2764856bf4b09a8a",
+        "type": "group",
+        "z": "9dd1801a862566ca",
+        "name": "Get Data (Main Process)",
+        "style": {
+            "stroke": "#ffC000",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "8753b49f8b7b5995",
+            "0d6e9e08216d9950",
+            "7accd866896c0339",
+            "8ba0a5e4310be733",
+            "c801cf5c85b1e586",
+            "eda61c6eb6b5719a",
+            "0c0949cc1ab6f44e",
+            "7127c4c36409f329"
+        ],
+        "x": 14,
+        "y": 319,
+        "w": 1172,
+        "h": 242
+    },
+    {
+        "id": "e059505671bc6a2d",
+        "type": "group",
+        "z": "9dd1801a862566ca",
+        "name": "Temperature Handler",
+        "style": {
+            "stroke": "#001f60",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "6d1301d83639d826",
+            "dc5a295f1432c4cb",
+            "8488df1c392734a7",
+            "d537b6022616e1f9",
+            "3e2e4a69bd46c5a6",
+            "4cdc7ef480988091",
+            "75ab1ee6edf1c3b6",
+            "180cc05ef0422fc5"
+        ],
+        "x": 14,
+        "y": 579,
+        "w": 512,
+        "h": 322
+    },
+    {
+        "id": "a0ce7f662a16ca48",
+        "type": "group",
+        "z": "9dd1801a862566ca",
+        "name": "Humidity Handler",
+        "style": {
+            "stroke": "#6f2fa0",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "bfb50df2ac476900",
+            "71da45d00eed204c",
+            "985a21da4541811a",
+            "ec8ce9d4ae1008a3"
+        ],
+        "x": 544,
+        "y": 579,
+        "w": 492,
+        "h": 122
+    },
+    {
+        "id": "8753b49f8b7b5995",
+        "type": "mysql",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "mydb": "d369bbd5570a5324",
+        "name": "Temperature Humidity DB",
+        "x": 550,
+        "y": 440,
+        "wires": [
+            [
+                "c801cf5c85b1e586"
+            ]
+        ]
+    },
+    {
+        "id": "0d6e9e08216d9950",
+        "type": "inject",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "7accd866896c0339"
+            ]
+        ]
+    },
+    {
+        "id": "7accd866896c0339",
+        "type": "function",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "Get Latest Data",
+        "func": "\nmsg.topic = (\n    `SELECT * FROM sensor_data \n    WHERE id = (SELECT MAX(id) FROM sensor_data)`\n);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 440,
+        "wires": [
+            [
+                "8753b49f8b7b5995"
+            ]
+        ]
+    },
+    {
+        "id": "8ba0a5e4310be733",
+        "type": "debug",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "Debug Temperature Data",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "c801cf5c85b1e586",
+        "type": "function",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "Parsing Message",
+        "func": "const data = msg.payload[0];\n\nreturn [\n    {payload: data.temp},\n    {payload: data.humid}\n];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 440,
+        "wires": [
+            [
+                "8ba0a5e4310be733",
+                "0c0949cc1ab6f44e"
+            ],
+            [
+                "7127c4c36409f329",
+                "eda61c6eb6b5719a"
+            ]
+        ]
+    },
+    {
+        "id": "eda61c6eb6b5719a",
+        "type": "debug",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "Debug Humidity Data",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "0c0949cc1ab6f44e",
+        "type": "link out",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "Link Out Temperature",
+        "mode": "link",
+        "links": [
+            "6d1301d83639d826"
+        ],
+        "x": 935,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "7127c4c36409f329",
+        "type": "link out",
+        "z": "9dd1801a862566ca",
+        "g": "2764856bf4b09a8a",
+        "name": "Link Out Humidity",
+        "mode": "link",
+        "links": [
+            "bfb50df2ac476900"
+        ],
+        "x": 935,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "6d1301d83639d826",
+        "type": "link in",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Link In Temperature",
+        "links": [
+            "0c0949cc1ab6f44e"
+        ],
+        "x": 55,
+        "y": 740,
+        "wires": [
+            [
+                "dc5a295f1432c4cb"
+            ]
+        ]
+    },
+    {
+        "id": "dc5a295f1432c4cb",
+        "type": "function",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Temperature Validator",
+        "func": "const celcius = Number((msg.payload).toFixed(2));\n\nif(isNaN(celcius)){\n    node.warn(\"Accepted payload is not a number\");\n    return null;\n}\n\nconst farenheit = Number((celcius * (9 / 5) + 32).toFixed(2));\nconst kelvin = Number((celcius + 273.15).toFixed(2));\n\nreturn [\n    {payload: celcius},\n    {payload: farenheit},\n    {payload: kelvin}\n];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 200,
+        "y": 740,
+        "wires": [
+            [
+                "8488df1c392734a7",
+                "4cdc7ef480988091"
+            ],
+            [
+                "d537b6022616e1f9",
+                "75ab1ee6edf1c3b6"
+            ],
+            [
+                "3e2e4a69bd46c5a6",
+                "180cc05ef0422fc5"
+            ]
+        ]
+    },
+    {
+        "id": "8488df1c392734a7",
+        "type": "debug",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Celcius",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "d537b6022616e1f9",
+        "type": "debug",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Farenheit",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "3e2e4a69bd46c5a6",
+        "type": "debug",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Kelvin",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "4cdc7ef480988091",
+        "type": "ui-gauge",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Temperature C",
+        "group": "a60b2b6b1c7bafa2",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 2,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Celcius",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "Celcius",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "35",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "70",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 420,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "75ab1ee6edf1c3b6",
+        "type": "ui-gauge",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Temperature F",
+        "group": "a60b2b6b1c7bafa2",
+        "order": 2,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 2,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Farenheit",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "Farenheit",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "32",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "95",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "158",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "32",
+        "max": "212",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 420,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "180cc05ef0422fc5",
+        "type": "ui-gauge",
+        "z": "9dd1801a862566ca",
+        "g": "e059505671bc6a2d",
+        "name": "Temperature K",
+        "group": "a60b2b6b1c7bafa2",
+        "order": 3,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 2,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "title": "Kelvin",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "Kelvin",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "273.15",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "308.15",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "343.15",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": "273.15",
+        "max": "373.15",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 420,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bfb50df2ac476900",
+        "type": "link in",
+        "z": "9dd1801a862566ca",
+        "g": "a0ce7f662a16ca48",
+        "name": "Link In Humidity",
+        "links": [
+            "7127c4c36409f329"
+        ],
+        "x": 585,
+        "y": 640,
+        "wires": [
+            [
+                "71da45d00eed204c"
+            ]
+        ]
+    },
+    {
+        "id": "71da45d00eed204c",
+        "type": "function",
+        "z": "9dd1801a862566ca",
+        "g": "a0ce7f662a16ca48",
+        "name": "Humidity Validator",
+        "func": "const humidity = Number((msg.payload).toFixed(2));\n\nif(isNaN(humidity)){\n    node.warn(\"Accepted humidity payload is not a number\");\n    return null;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 640,
+        "wires": [
+            [
+                "ec8ce9d4ae1008a3",
+                "985a21da4541811a"
+            ]
+        ]
+    },
+    {
+        "id": "985a21da4541811a",
+        "type": "ui-gauge",
+        "z": "9dd1801a862566ca",
+        "g": "a0ce7f662a16ca48",
+        "name": "Humidity Gauge",
+        "group": "d7dc91bbdec80e4e",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 6,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Relative Humidity",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "Relative Humidity",
+        "icon": "",
+        "prefix": "",
+        "suffix": "%",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "35",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "70",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 930,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ec8ce9d4ae1008a3",
+        "type": "debug",
+        "z": "9dd1801a862566ca",
+        "g": "a0ce7f662a16ca48",
+        "name": "Humidity",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 910,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "d369bbd5570a5324",
+        "type": "MySQLdatabase",
+        "name": "Temperature Humidity",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "temp_humid",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "a60b2b6b1c7bafa2",
+        "type": "ui-group",
+        "name": "Temperature ",
+        "page": "fef1a8f0acf26377",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "d7dc91bbdec80e4e",
+        "type": "ui-group",
+        "name": "Humidity",
+        "page": "fef1a8f0acf26377",
+        "width": 6,
+        "height": 1,
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "fef1a8f0acf26377",
+        "type": "ui-page",
+        "name": "Temperature and Humidity Monitoring",
+        "ui": "924f204b448d5afc",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "d46883e681ab77dc",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "924f204b448d5afc",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "d46883e681ab77dc",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "617f584abb079be0",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-mysql": "3.0.0",
+            "@flowfuse/node-red-dashboard": "1.30.1"
+        }
+    }
+]

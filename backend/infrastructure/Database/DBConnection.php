@@ -28,7 +28,7 @@ class DBConnection
             $conn = new PDO("mysql:host=$host;dbname=$dbName;port=$dbPort", $username, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $this->logger->writeLog("Successfully connected to database: $dbName");
+            $this->logger->writeLog("Successfully connected to database: $dbName", "SUCCESS");
             echo "[SUCCESS] Successfully connected to database" . PHP_EOL;
 
             return $conn;

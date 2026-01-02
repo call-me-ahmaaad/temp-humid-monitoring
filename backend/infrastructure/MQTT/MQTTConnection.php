@@ -34,7 +34,7 @@ class MQTTConnection
         try{
             $mqtt->connect($connectionSettings, true);
 
-            $this->logger->writeLog("Successfully connected to MQTT");
+            $this->logger->writeLog("Successfully connected to MQTT", 'SUCCESS');
             echo "[SUCCESS] Successfully connected to MQTT" . PHP_EOL;
         }catch(Exception $e){
             $this->logger->writeLog("Successfully connected to MQTT","ERROR");

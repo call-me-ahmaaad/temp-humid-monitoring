@@ -20,7 +20,7 @@ For data visualization, Node-RED is used to display temperature and humidity mon
 - **System Activity Logging:** The system implements a logging mechanism to record system activities and events, allowing developers to track data flow, monitor errors, and review the system’s activity history for debugging and maintenance purposes.
 
 ## 📷 Project Demo
-Will be uploaded soon!
+To see documentation of this project, you can click [this](https://drive.google.com/drive/folders/19ztHTA7iOQJ93ZhrLr7cAxauaWqNFjPS?usp=drive_link) Sorry for the poor resolution of my cam, I tried my best to get the best visual. If you have any question or you want to see more, just feel free to ask.
 
 ## 👥 Contributors
 <a href="https://github.com/call-me-ahmaaad/temp-humid-monitoring/graphs/contributors">
